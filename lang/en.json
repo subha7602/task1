@@ -1,0 +1,21 @@
+{
+  "Welcome": "Welcome !",
+  "SignupL2": "You are where you find the best,you are looking for !",
+  "emailAccountSignup": "or use your email for registration:",
+  "AlreadyHaveAccount": "Already have an account?",
+  "Email": "Enter your Email",
+  "Password": "Enter your Password",
+  "Name": "Enter your Name",
+  "ConfirmPassword": "Confirm your password",
+  "Signup": "Signup",
+  "Login": "Login",
+  "WelcomeBack": "Welcome Back!",
+  "LoginL2": "Welcome back to the best.We're always here,waiting for you !",
+  "emailAccountLogin": "or use your email account",
+  "ForgotPassword": "Forgot password?",
+  "NotHaveAccount": "Not have an account?",
+  "ChooseLanguage": "Choose Language",
+  "Tamil": "Tamil",
+  "English": "English"
+
+}

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "35105450802",
+    "project_id": "localisationui",
+    "storage_bucket": "localisationui.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35105450802:android:65097e1bf27347f561052b",
+        "android_client_info": {
+          "package_name": "com.example.task1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35105450802-830l6dmols884e7h2878dhrcc1pkmg8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.task1",
+            "certificate_hash": "3fe7641b0437f06cdf918d3a1030d48a631f7a66"
+          }
+        },
+        {
+          "client_id": "35105450802-2tg10r5srq31clk2a87dcm31vs9mbmis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcVr1p8S-w-zO3EuxGyw94WKNkFbCoXeU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35105450802-2tg10r5srq31clk2a87dcm31vs9mbmis.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
