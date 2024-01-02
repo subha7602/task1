@@ -1,15 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:convert';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get/get.dart';
-import 'package:task1/t_key.dart';
+import 'package:task1/utils/imports.dart';
 
 class LocalizationService {
   late final Locale locale;
   late final Locale currentLocale;
-  LocalizationService(this.locale){
-    currentLocale=locale;
+  LocalizationService(this.locale) {
+    currentLocale = locale;
   }
   static LocalizationService of(BuildContext context) {
     return Localizations.of(context, LocalizationService)!;
@@ -74,6 +69,7 @@ class _LocalizationServiceDelegate
     return false;
   }
 }
+
 class LocalizationController extends GetxController {
   late String selectedLanguage;
   late LocalizationService localizationService;
@@ -89,15 +85,20 @@ class LocalizationController extends GetxController {
 
   String get currentLanguage => localizationService.currentLocale.languageCode;
 
-  void toggleLanguage(BuildContext context) {
-    selectedLanguage = Tkeys.English.translate(context);
-    if (localizationService.currentLocale.languageCode == 'ta' && selectedLanguage != Tkeys.Tamil.translate(context)) {
-      localizationService = LocalizationService(Locale('en', 'US'));
-      selectedLanguage = Tkeys.English.translate(context);
-    } else if (localizationService.currentLocale.languageCode != 'ta' && selectedLanguage != Tkeys.English.translate(context)) {
-      localizationService = LocalizationService(Locale('ta', ''));
-      selectedLanguage = Tkeys.Tamil.translate(context);
+  void changeLanguage(String languageCode) {
+    Locale newLocale;
+    switch (languageCode) {
+      case 'en':
+        newLocale = Locale('en', 'US');
+        break;
+      case 'ta':
+        newLocale = Locale('ta', ' ');
+        break;
+      default:
+        newLocale = Locale('en', 'US');
     }
-    update();
+    localizationService = LocalizationService(newLocale);
+    localizationService.load();
+    Get.updateLocale(newLocale);
   }
 }

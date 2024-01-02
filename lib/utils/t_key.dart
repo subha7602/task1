@@ -1,14 +1,14 @@
-import 'package:task1/localisation_service.dart';
+import 'package:task1/utils/imports.dart';
 
 enum Tkeys {
   Welcome,
   SignupL2,
   emailAccountSignup,
   AlreadyHaveAccount,
-  Email,
-  Password,
-  Name,
-  ConfirmPassword,
+  HintEmail,
+  HintPassword,
+  HintName,
+  HintConfirmPassword,
   Signup,
   Login,
   WelcomeBack,
@@ -18,7 +18,17 @@ enum Tkeys {
   NotHaveAccount,
   ChooseLanguage,
   Tamil,
-  English
+  English,
+  LoginToAccount,
+  CreateAnAccount,
+  ErrorEmail,
+  ErrorName,
+  ErrorPassword,
+  ErrorConfirmPassword,
+  LabelEmail,
+  LabelName,
+  LabelPassword,
+  LabelConfirmPassword
 }
 
 extension TKeyExtension on Tkeys {

@@ -1,16 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:task1/ui/home_page.dart';
-import 'package:task1/ui/login_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:task1/utils/imports.dart';
 
 class GoogleSignInManager {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId: '35105450802-2tg10r5srq31clk2a87dcm31vs9mbmis.apps.googleusercontent.com', // Add your client ID here
+    clientId:
+        '35105450802-2tg10r5srq31clk2a87dcm31vs9mbmis.apps.googleusercontent.com', // Add your client ID here
   );
 
   Future<User?> signUpWithGoogle(BuildContext context) async {
@@ -18,10 +12,10 @@ class GoogleSignInManager {
     await _googleSignIn.signOut();
 
     final GoogleSignInAccount? googleSignInAccount =
-    await _googleSignIn.signIn();
+        await _googleSignIn.signIn();
     if (googleSignInAccount != null) {
       final GoogleSignInAuthentication googleAuth =
-      await googleSignInAccount.authentication;
+          await googleSignInAccount.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -29,7 +23,7 @@ class GoogleSignInManager {
       );
 
       final UserCredential authResult =
-      await _auth.signInWithCredential(credential);
+          await _auth.signInWithCredential(credential);
       final User? user = authResult.user;
 
       if (user != null) {
@@ -71,10 +65,10 @@ class GoogleSignInManager {
 
   Future<User?> signInWithGoogle(BuildContext context) async {
     final GoogleSignInAccount? googleSignInAccount =
-    await _googleSignIn.signIn();
+        await _googleSignIn.signIn();
     if (googleSignInAccount != null) {
       final GoogleSignInAuthentication googleAuth =
-      await googleSignInAccount.authentication;
+          await googleSignInAccount.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -82,7 +76,7 @@ class GoogleSignInManager {
       );
 
       final UserCredential authResult =
-      await _auth.signInWithCredential(credential);
+          await _auth.signInWithCredential(credential);
       final User? user = authResult.user;
 
       if (user != null) {
@@ -122,37 +116,168 @@ class GoogleSignInManager {
     };
   }
 }
+class FacebookSignIn{
+  Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
 
-class FacebookSignin extends StatefulWidget {
-  const FacebookSignin({super.key});
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-  @override
-  State<FacebookSignin> createState() => FacebookSigninState();
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  }
 }
 
-class FacebookSigninState extends State<FacebookSignin> {
-  String welcome="Facebook";
-  Map<String,dynamic>? _userData;
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-  Future<UserCredential> signInFacebook() async {
-    final LoginResult loginResult=await FacebookAuth.instance.login(permissions: ['email,']);
-    if( loginResult == LoginStatus.success){
-      final userData =await FacebookAuth.instance.getUserData();
-      _userData =userData;
 
-    }
-    else{
-      print (loginResult.message);
-    }
-    setState((){
-      welcome =_userData!['email'];
+
+class WebFacebookSignIn  {
+
+  Future<UserCredential> signInWithFacebook() async {
+  // Create a new provider
+  FacebookAuthProvider facebookProvider = FacebookAuthProvider();
+
+  facebookProvider.addScope('email');
+  facebookProvider.setCustomParameters({
+  'display': 'popup',
+  });
+
+  // Once signed in, return the UserCredential
+  return await FirebaseAuth.instance.signInWithPopup(facebookProvider);
+
+  // Or use signInWithRedirect
+  // return await FirebaseAuth.instance.signInWithRedirect(facebookProvider);
+  }
+  FacebookAuthProvider facebookProvider = FacebookAuthProvider();
+  //
+  // facebookProvider.addScope('email');
+  // facebookProvider.setCustomParameters({
+  // 'display': 'popup',
+  // });
+}
+
+
+class GitHub {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<UserCredential> signUpWithGithub() async {
+    GithubAuthProvider githubAuthProvider = GithubAuthProvider();
+    UserCredential userCredential =
+        await _auth.signInWithProvider(githubAuthProvider);
+
+    // Store user details in Firestore
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .set({
+      'displayName': userCredential.user!.displayName,
+      'photoURL': userCredential.user!.photoURL,
+      'email': userCredential.user!.email,
     });
-    final OAuthCredential oAuthCredential =FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-    return FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+    return userCredential;
   }
 
+  Future<UserCredential> signInWithGithub(BuildContext context) async {
+    GithubAuthProvider githubAuthProvider = GithubAuthProvider();
+    UserCredential userCredential =
+        await _auth.signInWithProvider(githubAuthProvider);
+
+    // Fetch user details from Firestore
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .get();
+// Set a default username if it's null in Firestore
+    String username = userDoc['displayName'] ?? 'John';
+    // Pass user details to homepage
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(
+          username: username,
+          profilePicture: userDoc['photoURL'],
+          email: userDoc['email'],
+        ),
+      ),
+    );
+
+    return userCredential;
+  }
+}
+
+signOutGitHub() async {
+  await FirebaseAuth.instance.signOut();
+}
+
+class GitHubWeb {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Future<void> signInGitHubWeb(BuildContext context) async {
+    Future<Map<String, dynamic>> fetchUserData(String uid) async {
+      DocumentSnapshot docSnapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      return docSnapshot.data() as Map<String, dynamic>;
+    }
+
+    try {
+      User? user;
+      // Trigger GitHub sign-in process
+      if (_auth.currentUser == null) {
+        GithubAuthProvider githubAuthProvider = GithubAuthProvider();
+        UserCredential userCredential =
+            await _auth.signInWithPopup(githubAuthProvider);
+        user = userCredential.user;
+
+        // Fetch user data from Firestore
+        Map<String, dynamic> userDoc = await fetchUserData(user!.uid);
+// Set a default username if it's null in Firestore
+        String username = userDoc['displayName'] ?? 'John';
+        // Navigate to the desired page with user details
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(
+              username: username,
+              profilePicture: userDoc['photoURL'],
+              email: userDoc['email'],
+            ),
+          ),
+        );
+      } else {
+        user = _auth.currentUser;
+      }
+    } catch (e) {
+      // Handle errors here
+      print('GitHub sign-in error: $e');
+    }
+  }
+
+  Future<void> signUpWithGitHub(BuildContext context) async {
+    try {
+      GithubAuthProvider githubAuthProvider = GithubAuthProvider();
+      UserCredential userCredential =
+          await _auth.signInWithPopup(githubAuthProvider);
+
+      // Store user details in Firestore during signup
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'displayName': userCredential.user!.displayName,
+        'photoURL': userCredential.user!.photoURL,
+        'email': userCredential.user!.email,
+      });
+
+      // Navigate to home page after successful signup
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
+      );
+    } catch (e) {
+      // Handle signup errors here
+      print('GitHub signup error: $e');
+    }
+  }
 }

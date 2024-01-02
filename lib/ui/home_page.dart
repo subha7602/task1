@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:task1/common/widgets.dart';
-import 'package:task1/t_key.dart';
-import 'package:task1/ui/login_screen.dart';
+import 'package:task1/utils/imports.dart';
 
 class HomePage extends StatelessWidget {
   final String email;
@@ -10,7 +6,10 @@ class HomePage extends StatelessWidget {
   final String profilePicture;
 
   // Constructor to receive user details
-  HomePage({required this.email, required this.username, required this.profilePicture});
+  HomePage(
+      {required this.email,
+      required this.username,
+      required this.profilePicture});
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   @override
   Widget build(BuildContext context) {
@@ -39,15 +38,14 @@ class HomePage extends StatelessWidget {
               style: TextStyle(fontSize: 18.0),
             ),
             button(
-              buttonText:'LogOut',
+              buttonText: 'LogOut',
               onPressed: () async {
                 await _googleSignIn.signOut();
+                await signOutGitHub();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => WebLogin()),
                 );
-
               },
             )
 

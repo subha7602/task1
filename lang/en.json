@@ -3,10 +3,10 @@
   "SignupL2": "You are where you find the best,you are looking for !",
   "emailAccountSignup": "or use your email for registration:",
   "AlreadyHaveAccount": "Already have an account?",
-  "Email": "Enter your Email",
-  "Password": "Enter your Password",
-  "Name": "Enter your Name",
-  "ConfirmPassword": "Confirm your password",
+  "HintEmail": "Enter your Email",
+  "HintPassword": "Enter your Password",
+  "HintName": "Enter your Name",
+  "HintConfirmPassword": "Confirm your password",
   "Signup": "Signup",
   "Login": "Login",
   "WelcomeBack": "Welcome Back!",
@@ -16,6 +16,16 @@
   "NotHaveAccount": "Not have an account?",
   "ChooseLanguage": "Choose Language",
   "Tamil": "Tamil",
-  "English": "English"
+  "English": "English",
+  "CreateAnAccount": "Create an Account",
+  "LoginToAccount": "Login to Account",
+  "ErrorEmail": "Enter a Valid Email",
+  "ErrorName": "Enter a Valid Name",
+  "ErrorPassword": "Enter a Valid Password",
+  "ErrorConfirmPassword": "Enter a Valid Password",
+  "LabelEmail": "Email",
+  "LabelName": "Name",
+  "LabelPassword": "Password",
+  "LabelConfirmPassword": "Confirm Password"
 
 }

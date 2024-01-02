@@ -1,31 +1,39 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:task1/main.dart';
-import 'package:task1/t_key.dart';
-import '../localisation_service.dart';
+import 'package:task1/utils/imports.dart';
 Widget spaceBox() {
   return Expanded(
     flex: 1,
     child: SizedBox(), // Added SizedBox to create space
   );
 }
-Widget button({String? buttonText, required VoidCallback onPressed}) {
-  String text = buttonText ?? 'Button Text'; // Set default text if buttonText is null
+
+Widget button({
+  String? buttonText,
+  required Function onPressed, // Change the type to Function
+  Color buttonColor = Colors.blue,
+  Color textColor = Colors.white,
+}) {
+  String text = buttonText ?? 'Button Text';
 
   return ElevatedButton(
-    onPressed: onPressed,
+    onPressed: () {
+      if (onPressed is VoidCallback) {
+        onPressed(); // Call the onPressed callback if it's a VoidCallback
+      } else if (onPressed is Function) {
+        // Call the callback with the BuildContext argument
+        onPressed();
+      }
+    },
     style: ElevatedButton.styleFrom(
-      primary: Colors.white, // White color for the button
+      primary: buttonColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0), // Curved border
+        borderRadius: BorderRadius.circular(10.0),
       ),
     ),
     child: Text(
       text,
       style: TextStyle(
-        color: Colors.blue, // Text color for the button text
-        fontSize: 16, // Adjust the font size as needed
+        color: textColor,
+        fontSize: 16,
       ),
     ),
   );
@@ -34,7 +42,11 @@ Widget button({String? buttonText, required VoidCallback onPressed}) {
 class CustomImageContainer extends StatelessWidget {
   final String imagePath;
   final VoidCallback? onTap;
-  const CustomImageContainer({Key? key, required this.imagePath, this.onTap,}) : super(key: key);
+  const CustomImageContainer({
+    Key? key,
+    required this.imagePath,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +54,13 @@ class CustomImageContainer extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: MediaQuery.of(context).size.height * 0.04,
-        width: MediaQuery.of(context).size.height * 0.04, // Make width the same as height
+        width: MediaQuery.of(context).size.height *
+            0.04, // Make width the same as height
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(50), // Make it a circle
-          border: Border.all( // Add this
+          border: Border.all(
+            // Add this
             color: Colors.black, // Set the color
             width: 1.0, // Set the width
           ),
@@ -62,112 +76,92 @@ class CustomImageContainer extends StatelessWidget {
           ),
         ),
       ),
-    )
-
-    ;
+    );
   }
-}class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  @override
-  _CustomAppBarState createState() => _CustomAppBarState();
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
-class _CustomAppBarState extends State<CustomAppBar> {
-  late String selectedLanguage = Tkeys.English.translate(context); // Initially set to English
-  late bool isEnglish = true; // Initially set to true for English
-  late String currentLanguage = Tkeys.English.translate(context); // Initially set to English
-  final localizationController = Get.put(LocalizationController());
+class CustomLanguageButton extends StatefulWidget {
+  final Color buttonColor;
+  final Color textColor;
+
+  CustomLanguageButton({required this.buttonColor, required this.textColor});
+
+  @override
+  _CustomLanguageButtonState createState() => _CustomLanguageButtonState();
+}
+
+class _CustomLanguageButtonState extends State<CustomLanguageButton> {
+  String _language = 'English';
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      //backgroundColor: Colors.blue,
-      actions: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () {
-              _showLanguageDialog(context);
-            },
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.04,
-              width: MediaQuery.of(context).size.width * 0.2,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Text('Language'),
+    return
+      Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: EdgeInsets.all(15.0),
+        child: Material(
+          elevation: 8.0,
+          borderRadius: BorderRadius.circular(10.0),
+          child:
+          Container(
+            height: MediaQuery.of(context).size.height *
+                (kIsWeb ? 0.05 : 0.05 ), // Adjust the height based on platform
+            width: MediaQuery.of(context).size.width *
+                (kIsWeb ? 0.05 : 0.2), // Adjust the width based on platform
+            decoration: BoxDecoration(
+              color: widget.buttonColor,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: TextButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: SingleChildScrollView(
+                        child: ListBody(
+                          children: <Widget>[
+                            GestureDetector(
+                              child: Center(child: AutoSizeText("English")),
+                              onTap: () {
+                                Get.find<LocalizationController>()
+                                    .changeLanguage('en');
+                                setState(() {
+                                  _language = 'English';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            Padding(padding: EdgeInsets.all(8.0)),
+                            GestureDetector(
+                              child: Center(child: Text('தமிழ்')),
+                              onTap: () {
+                                Get.find<LocalizationController>()
+                                    .changeLanguage('ta');
+                                setState(() {
+                                  _language = 'தமிழ்';
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              child: AutoSizeText(
+                _language,
+                style: TextStyle(color: widget.textColor, fontSize: kIsWeb ? 12 : 14), // Adjust the font size based on platform
               ),
             ),
-          ),
+          )
+
         ),
-      ],
-    );
-  }
-
-  void _showLanguageDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: AutoSizeText(Tkeys.ChooseLanguage.translate(context), maxLines: 1,),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildLanguageOption(Tkeys.Tamil.translate(context), () {
-                _handleLanguageSelection(Tkeys.Tamil.translate(context), false);
-              }),
-              _buildLanguageOption(Tkeys.English.translate(context), () {
-                _handleLanguageSelection(Tkeys.English.translate(context), true);
-              }),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLanguageOption(String language, Function() onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        child: Text(language),
       ),
-    );
-  }
-
-  void _handleLanguageSelection(String language, bool isEng) {
-    if ((currentLanguage == Tkeys.Tamil.translate(context) && language == Tkeys.Tamil.translate(context)) ||
-        (currentLanguage == Tkeys.English.translate(context) && language == Tkeys.English.translate(context))) {
-      Navigator.pop(context); // If the selected language matches the current language, close the dialog without changing anything
-      return;
-    }
-
-    setState(() {
-      selectedLanguage = language;
-      isEnglish = isEng;
-      localizationController.toggleLanguage(context);
-      currentLanguage = selectedLanguage;
-    });
-
-    Navigator.pop(context); // Close the dialog after changing the language
+    )
+    ;
   }
 }
-
-
-
-
-
-

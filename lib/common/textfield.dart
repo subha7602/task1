@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:task1/utils/imports.dart';
 
-class SimpleTextField extends StatefulWidget {
-  const SimpleTextField({
+class CustomTextField extends StatefulWidget {
+  const CustomTextField({
     this.textInputType,
     this.controller,
     this.hintText,
@@ -29,10 +29,10 @@ class SimpleTextField extends StatefulWidget {
   final Color? fillColor;
 
   @override
-  SimpleTextFieldState createState() => SimpleTextFieldState();
+  CustomTextFieldState createState() => CustomTextFieldState();
 }
 
-class SimpleTextFieldState extends State<SimpleTextField> {
+class CustomTextFieldState extends State<CustomTextField> {
   late TextEditingController textEditingController;
   late bool _isValid;
   late bool _obscureText;
@@ -44,16 +44,23 @@ class SimpleTextFieldState extends State<SimpleTextField> {
     _obscureText = widget.obscureText;
     textEditingController = widget.controller ?? TextEditingController();
   }
-// Email Validator
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextField(
+      child: Container(
+        width: double.infinity, // Adjust the width of the container as needed
+
+        child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          double dynamicFontSize = MediaQuery.of(context).size.width *
+              0.01; // Adjust this multiplier as needed
+          if (constraints.maxWidth < 400) {
+            dynamicFontSize = MediaQuery.of(context).size.width *
+                0.04; // Change font size for smaller screens
+          }
+          return TextField(
             controller: textEditingController,
             keyboardType: widget.textInputType,
             onChanged: (value) {
@@ -67,12 +74,15 @@ class SimpleTextFieldState extends State<SimpleTextField> {
             cursorColor: widget.textColor,
             obscureText: _obscureText,
             decoration: InputDecoration(
-                labelText: widget.hintText, // Changed hintText to labelText
-                labelStyle: TextStyle(color: widget.textColor.withOpacity(.45)), // Added this
+              labelText: widget.labelText,
+              // Changed to labelText
+              labelStyle: TextStyle(color: widget.textColor.withOpacity(.45)),
               hintText: widget.hintText,
-              hintStyle: TextStyle(color: widget.textColor.withOpacity(.45)),
+              hintStyle: TextStyle(
+                  color: widget.textColor.withOpacity(.45),
+                  fontSize: dynamicFontSize),
               errorText: !_isValid ? widget.errorText : null,
-              errorStyle: TextStyle(color: Colors.red),
+              errorStyle: TextStyle(color: Colors.white),
               filled: true,
               fillColor: widget.fillColor ?? Colors.white,
               prefixIcon: widget.prefixIconData != null
@@ -98,20 +108,22 @@ class SimpleTextFieldState extends State<SimpleTextField> {
                     )
                   : null,
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
+                borderRadius: BorderRadius.circular(10.0),
                 borderSide: BorderSide(color: Colors.black, width: 0.5),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
+                borderRadius: BorderRadius.circular(10.0),
                 borderSide: BorderSide(color: Colors.black, width: 0.5),
               ),
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              contentPadding: const EdgeInsets.all(15), // Added this
-              border: OutlineInputBorder( // Added this
-                borderRadius: BorderRadius.circular(30),)
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
+              // Changed to auto
+              contentPadding: const EdgeInsets.all(15),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-        ],
+          );
+        }),
       ),
     );
   }
