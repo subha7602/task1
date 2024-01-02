@@ -1,9 +1,10 @@
 import 'package:task1/utils/imports.dart';
 
 class GoogleSignInManager {
+  /////////////////////////////
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId:
+                 clientId:
         '35105450802-2tg10r5srq31clk2a87dcm31vs9mbmis.apps.googleusercontent.com', // Add your client ID here
   );
 
